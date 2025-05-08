@@ -1,1 +1,7 @@
-yadhu,Yadhu123,674865784,C001,hjkdfhg,7846,34686
+kim	    kim123	    7367455	    C001	korea           8765423	        32547
+lilly	lilly123	745687	    C002	jaffna	        987482465	    824687
+yadhu	yadhu123	784635873	C003	galle	        8597696	        497693
+sheela	sheela123	4352345	    C004	Nuwara Eliya	86786799	    36547
+meera	meera123	785468487	C005	badulla	        9850358	        578645
+john	john123	21453465876	C006	raagala	75667346525	3254456576
+rikki	rikki123	75937	C007	gjd	865976	049576
