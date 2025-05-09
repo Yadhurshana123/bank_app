@@ -1,10 +1,3 @@
-kim	   	001     1000.0
-lilly	002	    1000.0
-yadhu	003     1000.0
-sheela	004     1000.0
-meera	005     1000.0
-john	006     1000.0
-rikki	007     1000.0
-shakthi	008	    1000.0	 
-siva	009	    500.0	 
-kiki	ACC1001	1000.0
+kavishna	ACC1001	200.0
+sri     ACC1002     50000.0
+rinku	ACC1001	1000.0

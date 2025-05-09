@@ -1,3 +1,1 @@
-[]	 Deposit Rs<function deposit at 0x000001BA65846AC0>	 Withdraw Rs500
-009	 Deposit Rs0	 Withdraw Rs0
-ACC1001	
+ACC1001	ACC1001	
