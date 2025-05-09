@@ -2,6 +2,14 @@ kim	    kim123	    7367455	    C001	korea           8765423	        32547
 lilly	lilly123	745687	    C002	jaffna	        987482465	    824687
 yadhu	yadhu123	784635873	C003	galle	        8597696	        497693
 sheela	sheela123	4352345	    C004	Nuwara Eliya	86786799	    36547
-meera	meera123	785468487	C005	badulla	        9850358	        578645
-john	john123	21453465876	C006	raagala	75667346525	3254456576
-rikki	rikki123	75937	C007	gjd	865976	049576
+meera	meera123	7854684 	C005	badulla	        9850358	        578645
+john	john123	    2145346	    C006	raagala	        75667346525	    3254456576
+rikki	rikki123	75937	    C007	lindhula	    865976	        049576
+shakthi	shakthi123	4785676	    C008	peradheniya	    98765456739	    56783956
+siva	siva123	    347987	    C009	badulla	        897336494	    78648
+tamil	tamil123	58768	    C010	hatton	        875687	        45687
+vijay	12345	    9968	    C011	paanandhura	    75	            8890
+thala	0001kd      54656 	    C012	hgjhg	        76786	        76867
+nila	nila123	    835	        C013   	kondavil	     9354356        634635
+spa	spa123	75868756	C014	kotagala	45235435	76575564
+kiki	kiki123	56456	C015	ytfgyt	654	6546

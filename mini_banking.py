@@ -1,8 +1,7 @@
 import getpass
 
 user_ids = []
-transaction_history=[]
-balance=0
+balance = 0
 account_details=[]
 
 def create_customer():
@@ -19,54 +18,96 @@ def create_customer():
     with open("customers.txt", "a") as customer_file:
         customer_file.write(f"{user_name}\t{pass_word}\t{nic}\t{user_ID}\t{address}\t{t_no}\t{birth_date}\n")
 
+
     print("Customer created successfully! Now you're a customer of Unicom TIC Bank.")
     print("Hi", user_name, "! Welcome to Unicom TIC mini banking system.")
 
 
 #{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
-
+def generat_account_number(account_details):
+    if account_details:
+        # Assuming accounts are formatted as 'ACC<Number>' and you want the next available number
+        max_acc_number = max(int(acc[3:]) for acc in account_details)
+        return f"ACC{max_acc_number + 1}"
+    return "ACC1001"
 
 def create_account():
-    entered_user_ID=input("enter your userID :")
-    if entered_user_ID in user_ids:
-        ac_number = input("Enter account number :")
-        holder_name = input("Enter account holder name :")
+    entered_user_ID = input("Enter your userID: ")
+    if entered_user_ID in user_ids: 
+        ac_number = generat_account_number(account_details)  # Generates a new account number
+        holder_name = input("Enter account holder name: ")
         initial_balance = float(input("Enter Initial balance: $"))
         print("Account created successfully!")
-        global account_details
-        account_details.append({
-            "account_number": ac_number,
-            "Holder name": holder_name,
-            "Balance": initial_balance
-        })
-    
-    else:
-        print("User not found.Try again")
 
+        with open('account_details.txt', 'a') as details_file:
+            details_file.write(f"{holder_name}\t{ac_number}\t{initial_balance}\n")
+
+        with open('transfer.txt', 'a') as transfer_file:
+            transfer_file.write(f"{ac_number}\t")
+
+    else:
+        print("User not found. Try again.")
+
+    
+    
 #{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+
+def create_admin():
+    print("1. yes")
+    print("2. no")
+    confirm =input("You want to create another admin :").lower()
+
+    if confirm == "yes":
+        user_name = input("Enter new admin name: ").strip()
+        pass_word = input("Enter new admin password: ").strip()
+        user_ID = input("Enter new admin user ID: ").strip()
+        print(f"{user_name} is a new admin of UnicomTIC bank")
+        with open("users.txt", "a") as user_file:
+            user_file.write(f"{user_name}\t{pass_word}\t{user_ID}\n")
+    elif confirm == "no":
+        return
+    else:
+        print("Please kindly type yes or no")
+
+#{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
 
 def view_all_customers():
     try:
         with open("customers.txt", "r") as customer_file:
             for line in customer_file:
-                print(line.strip())
+                print(line)
     except FileNotFoundError:
         print("Customer Data Not found")           
 
 #{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
 
-amount = 0
+deposit=0
+balance=0
 def deposit():
-    global amount
+    ac_number = float(input("Enter your account number : "))
+    if ac_number not in account_details:
+        print("Account not found")
+        return
     try:
-        amount = int(input("Enter your deposit amount : $"))
-        global balance
-        balance += amount
-        print(f"Your available balance is : $",balance)
+        amount = float(input("Enter your deposit amount : Rs."))
+        if amount <=0 :
+            print("Must be positive")
+            return
     except ValueError:
-        print("You must enter a number only")
+        print("Invalid amount")
+        return
+
+    account_details[ac_number]["balance"] += amount
+    transaction_History.setdefault(ac_number,[]).append(f"deposited:{amount}")
+
+    with open('transfer.txt', 'a') as transfer_file:
+        transfer_file.write(f"Deposit Rs{amount}\t Withdraw Rs{withdraw}\n") 
+    with open('account_details.txt', 'a') as details_file:
+        details_file.write(f" Deposit Rs{amount}\t")
+               
+  
 
 #{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
@@ -76,10 +117,19 @@ def with_draw():
     global withdraw
     try:
         global balance
-        withdraw = int(input("Enter withdraw amount :$"))
+        withdraw = float(input("Enter withdraw amount : Rs."))
         if balance > withdraw and withdraw > 0:
+            global initial_balance 
+            balance += initial_balance 
             balance -= withdraw
-            print(f"Your available balance is:$",balance)
+            print("Your available balance is:$",balance)
+
+            with open('transfer.txt', 'a') as transfer_file:
+                transfer_file.write(f"Withdraw Rs{withdraw}\t Balance{balance}") 
+
+            with open('account_details.txt', 'a') as details_file:
+                details_file.write(f"Withdraw Rs{withdraw}\n")  
+
         else:
             print("Insufficient Funds. Check balance")
     except ValueError:
@@ -87,25 +137,29 @@ def with_draw():
 
 #{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
-
 def transaction_History():
-    global amount
-    global withdraw
-
-    transaction_history.append(f"Deposit : {amount}") 
-    transaction_history.append(f"Withdraw : {withdraw}") 
-
+    acNumber = input("Enter your account number: ")
+    
+    found = False
     with open('transfer.txt', 'r') as transfer_file:
-        transfer_file.write(f"{account_number}\t Deposit Rs{deposit}\t Withdraw Rs{withdraw}\n")
+        for line in transfer_file:
+            # Assuming each line in transfer.txt starts with the account number
+            if line.startswith(acNumber):  # Check if the account number matches
+                print(f"Transaction details for account {acNumber}: {line.strip()}")
+                found = True
+    
+    if not found:
+        print(f"No transactions found for account number: {acNumber}")
+
 
 #{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
 
 def del_account():
-    user_id = input("Enter ypur user ID : ")
+    user_id = input("Enter your user ID : ")
     delete_account = input("Enter account to delete: ")
     if user_id in user_ids:
-        if delete_account in account_details:
+        if delete_account in account_details.txt:
             confirm = input("Are you sure you want to delete this account?(yes or no) : ")
             if confirm.lower() == "yes":
                 account_details.remove(user_id)
@@ -119,19 +173,24 @@ def del_account():
 
 #{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
-
 def account_Details():
-    acNumber = input("Enter your account number :")
-    if acNumber in account_details:
-        account_details[account_number]={"Holoder Name":user_name,"User ID":user_ID,"Balance Amount":balance,"Deposit Rs":amount,"Withdraw Rs":withdraw}
-        #print(account_details)
+    try:
+        ac_number = input("Enter your account number :")
 
-        with open('account_details.txt', 'a') as details_file:
-            details_file.write(f"{user_name}\t{user_ID}\t{balance}\n Deposit RS{amount}\t Withdraw Rs{withdraw}\n")
+        with open('account_details.txt', 'r') as details_file:
+            #found = False
+            for details in details_file:
+                info = details.strip().split()
+                if ac_number == info[1]:
+                    print(details)
+                    #found = True
+                    break
+                else:
+                    print("Account Not Found....")
+    except FileNotFoundError:
+        print("Customer Data Not Found")
 
-    else:
-        print("Account Not Found....")
-
+    
 #{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
 
@@ -151,6 +210,7 @@ def admin_login():
                     return
             print("Admin information is not correct.")
             break
+
 #{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
 
@@ -179,8 +239,8 @@ def admin_menu():
         print("==== ADMIN MENU ====")
         print("1. Create Customer")
         print("2. Create Account")  
-        print("3. View All Customers")
-        print("4. Check Balance")
+        print("3. Create New Admin")
+        print("4. View All Customers")
         print("5. Delete Account")
         print("6. Exit")
         choice = input("Enter your choice (1-6): ")
@@ -190,9 +250,9 @@ def admin_menu():
         elif choice == "2":
             create_account()
         elif choice == "3":
-            view_all_customers()
+            create_admin()
         elif choice == "4":
-           print("Your available balance is: $", 0)  
+            view_all_customers()
         elif choice == "5":
             del_account()
         elif choice == "6":
