@@ -1,2 +1,1 @@
-Admin   Admin123    A001
-lora	lora123	A002
+siya	siya123	A003

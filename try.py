@@ -1,2 +1,0 @@
-def account_details():
-    

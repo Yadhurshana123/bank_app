@@ -1,3 +1,0 @@
-kavishna	ACC1001	200.0
-sri     ACC1002     50000.0
-rinku	ACC1001	1000.0

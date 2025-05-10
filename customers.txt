@@ -1,3 +1,2 @@
-Kavishna	123456	987	001	jhgkjhgk	7875887	765876
-sri 12345   5325    002 jhgkjhgk765 75765765    67576576
-rinku	rinku123	5646	003	jgdkij	5867846	7856873
+C001 	 nira	      nira123	      57686656	      kotagala	     0754586546	      2004/9/8
+C002  	  linda  	  linda123  	  78568376  	  naanu oya  	 0755785345  	  2007/5/8
