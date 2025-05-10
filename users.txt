@@ -1,1 +1,2 @@
-siya	siya123	A003
+siya	siya123	A002
+kim 	kim123	A002

@@ -13,7 +13,7 @@ def create_customer():
 
 
     with open("customers.txt", "a") as customer_file:
-        customer_file.write(f"{user_ID}  \t  {user_name}  \t  {pass_word}  \t  {nic}  \t  {address}  \t  {t_no}  \t  {birth_date}\n")
+        customer_file.write(f"{user_name}  \t  {pass_word}  \t  {user_ID}  \t  {nic}  \t  {address}  \t  {t_no}  \t  {birth_date}\n")
 
     print("Customer created successfully! Now",user_name,"is a customer of Unicom TIC Bank.")
 
@@ -190,6 +190,9 @@ def admin_login():
                 admin_menu() 
                 return
 
+            else:
+                print("Admin information not correct")
+
         elif option == "2":
             user_name = input("Enter your user name: ").strip()
             pass_word = input("Enter your password: ").strip()
@@ -197,33 +200,43 @@ def admin_login():
 
             with open("users.txt", "r") as user_file:
                 for user in user_file:
-                    user_details = user.strip().split() 
-                    if user_name == user_details[0] and pass_word == user_details[1] and user_ID == user_details[2]:
-                        print("Login Successful!")
-                        print(f"Hi {user_name}, Welcome Admin")
-                        admin_menu()
+                    user_details = user.strip().split()
+
+                    if len(user_details) == 3:
+                        file_user_name, file_pass_word, file_user_ID = user_details
+                        if user_name == file_user_name and pass_word == file_pass_word and user_ID == file_user_ID:
+                            print("Login Successful!")
+                            print(f"Hi {user_name}, Welcome Admin")
+                            admin_menu()
+                            return
+                        else: 
+                            print("Admin not found.Try again")
+                            break
         else: 
-            print("Admin information is not correct.")
-            break
+            print("Please kindly choose 1 or 2")
+
 
 #{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
 
 def customer_login():
     while True:
-        user_ID = input("Enter your user ID: ").strip()
         user_name = input("Enter your user name: ").strip()
         pass_word = input("Enter your password: ").strip()
-        
+        user_ID = input("Enter your user ID: ").strip()
+
         with open("customers.txt", "r") as customer_file:
-            for customer in customer_file: 
-                customer_details = customer.strip().split() 
-                if user_ID == customer_details[0] and user_name == customer_details[1] and pass_word == customer_details[2]:
-                    print("Login Successful!")
-                    print(f"Hi {user_name}, Welcome Customer")
-                    customer_menu()
-                    return
-                break
+            for customer in customer_file:
+                customer_details = customer.strip().split()
+                
+                if len(customer_details) == 3:
+                    file_user_name, file_pass_word, file_user_ID = customer_details
+
+                    if user_name == file_user_name and pass_word == file_pass_word and user_ID == file_user_ID:
+                        print("Login Successful!")
+                        print(f"Hi {user_name}, Welcome Customer")
+                        customer_menu()  
+                        return
             print("Customer information is not correct. Try again.")
 
 #{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
