@@ -1,7 +1,1 @@
-nira	1000	100.0
-Deposit Rs1500.0
-Deposit Rs200.0
-Withdraw Rs100.0
-
-linda	1010	1500.0
-Deposit Rs1500.0
+leela , 1500.0 , ACC1

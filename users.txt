@@ -1,2 +1,2 @@
-siya	siya123	A002
-kim 	kim123	A002
+lora , lora123 , A002
+john , john123 , A003
