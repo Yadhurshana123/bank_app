@@ -2,21 +2,34 @@ import getpass
 
 balance = 0
 
+def generate_user_identy():
+    user_id = 1
+    count = 0
+    with open("customers.txt", "r") as customer_file: 
+        for line in  customer_file:
+            count += 1 
+            user_id += count 
+        return user_id  
+
 def create_customer():
     user_name = input("Enter customer name: ").strip()
     pass_word = getpass.getpass("Enter customer password: ").strip()
     nic = int(input("Enter customer NIC number: "))    
-    user_ID = input("Enter customer user ID: ").strip()
     address = input("Enter customer address: ").strip()
     t_no = int(input("Enter customer phone number: "))
     birth_date = input("Enter customer birth date: ")
 
-
     with open("customers.txt", "a") as customer_file:
-        customer_file.write(f"C{user_ID}  ,  {user_name}  ,  {pass_word}  ,  {nic}  ,  {address}  ,   {t_no}  ,   {birth_date}\n")
+        customer_file.write(f"{user_name}  ,  {pass_word}  ,  {nic}  ,  {address}  ,   {t_no}  ,   {birth_date} , ")
+
+        user_ID =  generate_user_identy()
+    with open("customers.txt", "a") as customer_file:
+        customer_file.write(f"C0{user_ID}\n")
+
 
     print("Customer created successfully! Now",user_name,"is a customer of Unicom TIC Bank.")
 
+    
 #{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
 
@@ -39,21 +52,27 @@ def create_account():
     with open("customers.txt", "r") as customer_file:
         for line in customer_file:
             ID = line.strip().split()
-            if ID[0] == user_id:
+            if ID[-1] == user_id:
+
                 holder_name = input("Enter account holder name: ")
                 initial_balance = float(input("Enter Initial balance :Rs."))
-                print("Account created successfully!")
-                with open('accounts.txt', 'a') as details_file:
-                    details_file.write(f"{holder_name} , {initial_balance} , ")
-                    ac_number = generate_account_no() 
-                
-                with open('accounts.txt', 'a') as details_file:
-                    details_file.write(f"ACC{ac_number}\n")
 
-                with open('transfer.txt', 'a') as transfer_file:
-                    transfer_file.write(f"ACC{ac_number} , Balance Rs:{initial_balance}\n")
+                if initial_balance < 500:
+                    print("Your amount must grater then Rs.500. Try again")
 
-                break
+                else:
+                    with open('accounts.txt', 'a') as details_file:
+                        details_file.write(f"{holder_name} , {initial_balance} , ")
+                        ac_number = generate_account_no() 
+                    
+                    with open('accounts.txt', 'a') as details_file:
+                        details_file.write(f"ACC{ac_number}\n")
+
+                    with open('transfer.txt', 'a') as transfer_file:
+                        transfer_file.write(f"ACC{ac_number} , Balance Rs:{initial_balance}\n")
+
+                    print("Account created successfully!")
+                 #break
         else:
             print("User ID not found")
 
@@ -107,7 +126,7 @@ def deposit():
     with open('accounts.txt', 'a') as details_file:
         details_file.write(f"Deposit Rs{amount}\n")
 
-    print(f"Rs.{amount} deposited successfully into account {ac_number}.")
+    print(f"Rs.{amount} deposited successfully.")
 
 
 #{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
@@ -137,7 +156,7 @@ def with_draw():
     with open('transfer.txt', 'a') as transfer_file:
         transfer_file.write(f"Withdraw Rs{withdraw}\n")
     
-    print(f"Rs.{withdraw} withdrawed successfully into account {ac_number}.")
+    print(f"Rs.{withdraw} withdrawed successfully.")
 
            
 #{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
@@ -162,7 +181,7 @@ def account_details(account_number):
         with open('accounts.txt', 'r') as details_file:
             for line in details_file:
                 data = line.strip().split()
-                if data[1] == account_number:
+                if data[-1] == account_number:
                     print(f"Account found!!. Name:{data[0]}\t Balance:{data[2]} \n ")
 
     except FileNotFoundError:
@@ -197,7 +216,7 @@ def admin_login():
                     print("Admin information not correct")
 
             elif option == "2":
-                user_name = input("Enter your user name: ").strip()
+                user_name = input("Enter your user name: ").strip().lower()
                 pass_word = input("Enter your password: ").strip()
                 user_ID = input("Enter your user ID: ").strip()
 
@@ -207,7 +226,7 @@ def admin_login():
 
                         if user_name in user_details and pass_word in user_details and user_ID in user_details:
                             print("Login Successful!")
-                            print(f"Hi {user_name}, Welcome Admin")
+                            print(f"Hi {user_name},Welcome to Unicom TIC bank")
                             admin_menu()
                             return
             else: 
@@ -229,15 +248,14 @@ def customer_login():
             for customer in customer_file:
                 customer_details = customer.strip().split()
                 
-                if len(customer_details) == 3:
-                    file_user_name, file_pass_word, file_user_ID = customer_details
-
-                    if user_name == file_user_name and pass_word == file_pass_word and user_ID == file_user_ID:
-                        print("Login Successful!")
-                        print(f"Hi {user_name}, Welcome Customer")
-                        customer_menu()  
-                        return
-            print("Customer information is not correct. Try again.")
+                if user_name in customer_details and pass_word in customer_details and user_ID in customer_details:
+                    print("Login Successful!")
+                    print(f"Hi {user_name}, Welcome Customer")
+                    customer_menu()  
+                    return
+                
+                else:
+                    print("Customer information is not correct. Try again.")
 
 #{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
@@ -286,7 +304,7 @@ def customer_menu():
         elif choice == "2":
             with_draw()
         elif choice == "3":
-            account_details()
+           print(f"Your available balance is,{balance}")
         elif choice == "4":
             transaction_History()
         elif choice == "5":

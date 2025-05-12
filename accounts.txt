@@ -1,1 +1,3 @@
-leela , 1500.0 , ACC1
+meera , 1500.0 , ACC1
+Deposit Rs500.0
+Withdraw Rs500.0
