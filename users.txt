@@ -1,2 +1,4 @@
-lora , lora123 , A002
-john , john123 , A003
+meera  , C01
+geethu , C02
+lora , A002
+john , A003

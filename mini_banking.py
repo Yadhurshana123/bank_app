@@ -12,23 +12,27 @@ def generate_user_identy():
         return user_id  
 
 def create_customer():
-    user_name = input("Enter customer name: ").strip()
-    pass_word = getpass.getpass("Enter customer password: ").strip()
-    nic = int(input("Enter customer NIC number: "))    
-    address = input("Enter customer address: ").strip()
-    t_no = int(input("Enter customer phone number: "))
-    birth_date = input("Enter customer birth date: ")
+    try:
+        user_name = input("Enter customer name: ").strip()
+        pass_word = getpass.getpass("Enter customer password: ").strip()
+        nic = int(input("Enter customer NIC number: "))    
+        address = input("Enter customer address: ").strip()
+        t_no = int(input("Enter customer phone number: "))
+        birth_date = input("Enter customer birth date: ")
 
-    with open("customers.txt", "a") as customer_file:
-        customer_file.write(f"{user_name}  ,  {pass_word}  ,  {nic}  ,  {address}  ,   {t_no}  ,   {birth_date} , ")
+        with open("customers.txt", "a") as customer_file:
+            customer_file.write(f"{user_name}  ,  {pass_word}  ,  {nic}  ,  {address}  ,   {t_no}  ,   {birth_date} , ")
 
-        user_ID =  generate_user_identy()
-    with open("customers.txt", "a") as customer_file:
-        customer_file.write(f"C0{user_ID}\n")
+            user_ID =  generate_user_identy()
+        with open("customers.txt", "a") as customer_file:
+            customer_file.write(f"C0{user_ID}\n")
 
+        with open("users.txt", "a") as user_file:
+            customer_file.write(f"{user_name}  , C0{user_ID}")
 
-    print("Customer created successfully! Now",user_name,"is a customer of Unicom TIC Bank.")
-
+        print("Customer created successfully! Now",user_name,"is a customer of Unicom TIC Bank.")
+    except ValueError:
+        print("Enter numbers only")
     
 #{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
@@ -48,34 +52,45 @@ def generate_account_no():
         return 
 
 def create_account():
-    user_id = input("Enter customer userID:")
-    with open("customers.txt", "r") as customer_file:
-        for line in customer_file:
-            ID = line.strip().split()
-            if ID[-1] == user_id:
+    while True:
+        user_id = input("Enter customer userID:")
 
-                holder_name = input("Enter account holder name: ")
-                initial_balance = float(input("Enter Initial balance :Rs."))
+        with open("customers.txt", "r") as customer_file:
 
-                if initial_balance < 500:
-                    print("Your amount must grater then Rs.500. Try again")
+            for line in customer_file:
+                ID = line.strip().split()
+                #if user_id in ID:
+                #if ID[-1] == user_id:
+                if user_id in ID[-1]:
+                    holder_name = input("Enter account holder name: ")
 
+                    with open("customers.txt", "r") as customer_file:
+
+                        for line in customer_file:
+                            user_name = line.strip().split()
+
+                            if user_name[0] == holder_name:
+                                initial_balance = float(input("Enter Initial balance :Rs."))
+
+                                if initial_balance < 500:
+                                    print("Your amount must grater then Rs.500. Try again")
+                                else:
+                                    with open('accounts.txt', 'a') as details_file:
+                                        details_file.write(f"{holder_name} , {initial_balance} , ")
+                                        ac_number = generate_account_no() 
+                                    
+                                    with open('accounts.txt', 'a') as details_file:
+                                        details_file.write(f"ACC{ac_number}\n")
+
+                                    with open('transfer.txt', 'a') as transfer_file:
+                                        transfer_file.write(f"ACC{ac_number} , Balance Rs:{initial_balance}\n")
+
+                                    print("Account created successfully!")
+                            else:
+                                print("Username alredy taken.try another.")
                 else:
-                    with open('accounts.txt', 'a') as details_file:
-                        details_file.write(f"{holder_name} , {initial_balance} , ")
-                        ac_number = generate_account_no() 
-                    
-                    with open('accounts.txt', 'a') as details_file:
-                        details_file.write(f"ACC{ac_number}\n")
-
-                    with open('transfer.txt', 'a') as transfer_file:
-                        transfer_file.write(f"ACC{ac_number} , Balance Rs:{initial_balance}\n")
-
-                    print("Account created successfully!")
-                 #break
-        else:
-            print("User ID not found")
-
+                    print("User ID not found")
+                    break
 
 #{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
@@ -84,8 +99,11 @@ def create_admin():
     pass_word = input("Enter new admin password: ").strip()
     user_ID = input("Enter new admin user ID: ").strip()
     print(f"{user_name} is a new admin of UnicomTIC bank")
+    with open("admins.txt", "a") as admin_file:
+       admin_file.write(f"{user_name} , {pass_word} , {user_ID}\n")
+
     with open("users.txt", "a") as user_file:
-        user_file.write(f"{user_name} , {pass_word} , {user_ID}\n")
+        user_file.write(f"{user_name}  , {user_ID}")
     
 #{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
@@ -189,6 +207,25 @@ def account_details(account_number):
 
 #{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
+def count_accounts(accounts):
+    with open('accounts.txt', 'r') as details_file:
+        for line in details_file:
+            accounts = line.strip().split()
+            print("Total Accounts:",len(accounts))
+
+#{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+
+def display_total_users(users):
+    with open("users.txt", "r") as user_file:
+        for line in user_file:
+            users = line.strip().split()
+        lengh = len(users)
+        print("Total users:",lengh)
+        if lengh == "0":
+            print("No users here.")
+
+#{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{[[]]}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+
 def admin_login():
     try:
         while True:
@@ -220,11 +257,11 @@ def admin_login():
                 pass_word = input("Enter your password: ").strip()
                 user_ID = input("Enter your user ID: ").strip()
 
-                with open("users.txt", "r") as user_file:
-                    for user in user_file:
-                        user_details = user.strip().split()
+                with open("admins.txt", "r") as admin_file:
+                    for admin in admin_file:
+                        admin_details = admin.strip().split()
 
-                        if user_name in user_details and pass_word in user_details and user_ID in user_details:
+                        if user_name in admin_details and pass_word in admin_details and user_ID in admin_details:
                             print("Login Successful!")
                             print(f"Hi {user_name},Welcome to Unicom TIC bank")
                             admin_menu()
@@ -267,8 +304,10 @@ def admin_menu():
         print("2. Create Account")  
         print("3. Create New Admin")
         print("4. View All Customers")
-        print("5. Exit")
-        choice = input("Enter your choice (1-5): ")
+        print("5. Display Account Count")
+        print("6. Display Total Users")
+        print("7. Exit")
+        choice = input("Enter your choice (1-7): ")
 
         if choice == "1":
             create_customer()
@@ -279,6 +318,10 @@ def admin_menu():
         elif choice == "4":
             view_all_customers()
         elif choice == "5":
+            count_accounts(0)
+        elif choice == "6":
+            display_total_users(0)
+        elif choice == "7":
             print("Thank you for using Unicom TIC banking system.Good bye!")
             exit()
         else:
